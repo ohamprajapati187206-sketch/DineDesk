@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Branch {
+  id           Int             @id @default(autoincrement())
+  name         String
+  address      String?
+  phone        String?
+  isActive     Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  users        User[]
+  tables       DiningTable[]
+  orders       Order[]
+  rooms        Room[]
+  bookings     Booking[]
+  inventory    InventoryItem[]
+  staff        Staff[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("staff")  // "superadmin" | "admin" | "staff"
+  branchId  Int?
+  createdAt DateTime @default(now())
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+}
+
+model MenuItem {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String
+  price     Float
+  isVeg     Boolean  @default(true)
+  isActive  Boolean  @default(true)
+  photo     String?
+  createdAt DateTime @default(now())
+  // Shared — no branchId (same menu across all branches)
+}
+
+model DiningTable {
+  id       Int      @id @default(autoincrement())
+  name     String
+  capacity Int
+  status   String   @default("Free")
+  branchId Int
+  branch   Branch   @relation(fields: [branchId], references: [id])
+  orders   Order[]
+}
+
+model Order {
+  id        Int          @id @default(autoincrement())
+  tableId   Int?
+  type      String       @default("dine-in")
+  status    String       @default("New")
+  source    String       @default("Direct")
+  total     Float        @default(0)
+  branchId  Int
+  createdAt DateTime     @default(now())
+  table     DiningTable? @relation(fields: [tableId], references: [id])
+  branch    Branch       @relation(fields: [branchId], references: [id])
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int?
+  quantity   Int
+  price      Float
+  name       String?
+  order      Order    @relation(fields: [orderId], references: [id])
+}
+
+model Room {
+  id       Int       @id @default(autoincrement())
+  number   String
+  type     String
+  status   String    @default("Available")
+  price    Float
+  branchId Int
+  branch   Branch    @relation(fields: [branchId], references: [id])
+  bookings Booking[]
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  guestName  String
+  guestPhone String
+  type       String
+  roomId     Int?
+  tableId    Int?
+  checkIn    DateTime
+  checkOut   DateTime
+  status     String   @default("Confirmed")
+  branchId   Int
+  createdAt  DateTime @default(now())
+  room       Room?    @relation(fields: [roomId], references: [id])
+  branch     Branch   @relation(fields: [branchId], references: [id])
+}
+
+model InventoryItem {
+  id           Int      @id @default(autoincrement())
+  name         String
+  unit         String
+  currentStock Float
+  minStock     Float
+  supplier     String?
+  branchId     Int
+  updatedAt    DateTime @updatedAt
+  branch       Branch   @relation(fields: [branchId], references: [id])
+}
+
+model Staff {
+  id         Int          @id @default(autoincrement())
+  name       String
+  role       String
+  department String
+  phone      String?
+  salary     Float
+  branchId   Int
+  createdAt  DateTime     @default(now())
+  branch     Branch       @relation(fields: [branchId], references: [id])
+  attendance Attendance[]
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  staffId   Int
+  date      DateTime @default(now())
+  status    String   @default("Present")
+  staff     Staff    @relation(fields: [staffId], references: [id])
+}

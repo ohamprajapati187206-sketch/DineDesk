@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0D0F14;
+}
+
+@media print {
+  body > *:not(#receipt-root) { display: none !important; }
+  #receipt-root { display: block !important; }
+}
