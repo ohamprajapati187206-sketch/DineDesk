@@ -22,37 +22,6 @@ DineDesk is a full-stack restaurant and hotel management system built as a bette
 
 ---
 
-## Screenshots
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Restaurant Management
-![Restaurant](screenshots/restaurant.png)
-
-### Hotel Management
-![Hotel](screenshots/hotel.png)
-
-### Booking Management
-![Booking](screenshots/booking.png)
-
-### Billing & Invoicing
-![Billing](screenshots/billing.png)
-
-### Inventory Management
-![Inventory](screenshots/inventory.png)
-
-### Staff Management
-![Staff](screenshots/staff.png)
-
-### Online Orders
-![Online Orders](screenshots/online-orders.png)
-
-### Reports & Analytics
-![Reports](screenshots/reports.png)
-
----
-
 ## System Architecture
 
 ```
